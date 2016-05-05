@@ -1,0 +1,23 @@
+{
+  "name": "authentication-app",
+  "homepage": "https://github.com/vnemilov/authentication-app",
+  "authors": [
+    "vnemilov <vnemilov@yahoo.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-animate": "~1.5.5",
+    "angular-ui-router": "ui-router#~0.2.18",
+    "AngularJS-Toaster": "toaster#~2.0.0"
+  }
+}

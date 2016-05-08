@@ -46,13 +46,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
     .state('login', {
         url : '/login',
         title: 'Login',
-        templateUrl : 'partials/login.html',
+        templateUrl : 'partials/login.php',
         controller: 'authCtrl'
-    }).state('logout', {
-        url : '/logout',
-        title: 'Logout',
-        templateUrl : 'partials/login.html',
-        controller : 'logoutCtrl'
+    
     }).state('signup', {
         url : '/signup',
         title: 'Signup',
@@ -66,15 +62,19 @@ app.config(function($stateProvider, $urlRouterProvider) {
     }).state('/',{
         url:'/',
         title: 'Login',
-        templateUrl: "partials/login.html",
+        templateUrl: "partials/login.php",
         controller: 'authCtrl'
     })
 });
     // .run(function ($rootScope, $location, Data) {
+    //     console.log('beginning');
     //     $rootScope.$on("$routeChangeStart", function (event, next, current) {
+    //         console.log('second');
     //         $rootScope.authenticated = false;
     //         Data.get('session').then(function (results) {
+    //             console.log('middle');
     //             if (results.uid) {
+    //                 console.log('inside middle');
     //                 $rootScope.authenticated = true;
     //                 $rootScope.uid = results.uid;
     //                 $rootScope.name = results.name;
@@ -83,3 +83,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
     //         });
     //     });
     // });
+
+    // IMPLEMENT THE LOGIN WITH REMEMBER ME COOKIE !!!!!!!! FIRST SET THE COOKIE WITH REMEMBERIDENTIFIER__REMEMBERTOKEN and save the REMEMBERIDENTIFIER and REMEMBERTOKEN in the database
+    // then after you reopen the browser check for the REMEMBERIDENTIFIER_REMEMBERTOKEN cookie and if it exist check in the database if there is a REMEMBERIDENTIFIER and REMEMBERTOKEN with the same values
+    // if there is a match login a user with the id which has the REMEMBERMETOKEN and REMEMBERMEIDENTIFIER

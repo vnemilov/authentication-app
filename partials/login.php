@@ -2,7 +2,7 @@
     <ul class="breadcrumb">
         <li>
             <i class="ace-icon fa fa-home home-icon"></i>
-            <a href="#">Home</a>
+            <a href="#">Home {{yolo}}</a>
         </li>
         <li class="active">Login</li>
     </ul>
@@ -40,6 +40,10 @@
                                 <i class="ace-icon fa fa-lock"></i>
                             </span>
                         </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="remember">Remember me</label>
+                    <input type="checkbox" id="remember" ng-model="login.remember">
                     </div>
                     <div class="space"></div>
                      <div class="clearfix">

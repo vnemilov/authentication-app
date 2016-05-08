@@ -45,6 +45,9 @@ class DbHandler {
             return NULL;
         }
     }
+    public function updateUserCredentials($query){
+        $r = $this->conn->query($query) or die($this->conn->error.__LINE__);
+    }
 public function getSession(){
     if (!isset($_SESSION)) {
         session_start();

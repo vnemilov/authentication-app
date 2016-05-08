@@ -11,6 +11,7 @@ $app->get('/session', function() {
 $app->post('/login', function() use ($app) {
     require_once 'passwordHash.php';
     $r = json_decode($app->request->getBody());
+ 
     verifyRequiredParams(array('email', 'password'),$r->customer);
     $response = array();
     $db = new DbHandler();
@@ -19,8 +20,23 @@ $app->post('/login', function() use ($app) {
     $user = $db->getOneRecord("select uid,name,password,email,created from customers_auth where phone='$email' or email='$email'");
     if ($user != NULL) {
         if(passwordHash::check_password($user['password'],$password)){
+            // if(5>3){
+
+            //      $tabble_name = "customers_auth";
+            //      $column_names = array('remember_identifier', 'remember_token');
+            //      $result = $db->insertIntoTable($r->customer, $column_names, $tabble_name);
+            // }
         $response['status'] = "success";
         $response['message'] = 'Logged in successfully.';
+           if(isset($r->customer->remember)){
+            $rememberIdentifier = "589347589u3485gdfhgdfughdf89g"; 
+            $rememberToken = "89u546854jkgh89dfgdf";
+            $updateUser = $db->updateUserCredentials("UPDATE customers_auth SET remember_identifier='$rememberIdentifier' WHERE name='$email'");
+            $remember = $r->customer->remember;
+            $response['rememberinfo'] = $rememberIdentifier;
+     }else{
+         $response['rememberinfo'] = false;
+     }
         $response['name'] = $user['name'];
         $response['uid'] = $user['uid'];
         $response['email'] = $user['email'];

@@ -1,8 +1,22 @@
 <?php 
 $app->get('/session', function() {
     $db = new DbHandler();
-    $session = $db->getSession();
-    echoResponse(200, $session);
+    if(!isset($_SESSION['uid'])){
+        if(isset($_COOKIE['user'])){
+            $fulltoken = explode("___", $_COOKIE['user']);
+            $rememberIdentifier = $fulltoken[0];
+            $rememberToken = $fulltoken[1];
+            $user = $db->getOneRecord("SELECT uid, name, password, email, created FROM customers_auth WHERE remember_identifier='$rememberIdentifier'");
+            $_SESSION['uid'] = $user['uid'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['name'] = $user['name'];
+            $session = $db->getSession();
+            echoResponse(200, $session);
+        }else{
+            $session = $db->getSession();
+            echoResponse(200, $session);
+        }
+    }
 });
 
 $app->post('/login', function() use ($app) {
@@ -95,12 +109,14 @@ $app->get('/logout', function() {
     $session = $db->destroySession();
     $response["status"] = "info";
     $response["message"] = "Logged out successfully";
+    $email = $_SESSION['email'];
+    $updateUser = $db->updateUserCredentials("UPDATE customers_auth SET remember_identifier='', remember_token='' WHERE name='$email'");
     if(isset($_COOKIE['user'])){
-            $cookie_name = 'user';
-    $cookie_value = $_COOKIE['user'];
-    setcookie($cookie_name, $cookie_value, time() - 3600, "/"); // 86400 = 1 day
-    }
+        $cookie_name = 'user';
+        $cookie_value = $_COOKIE['user'];
+setcookie($cookie_name, $cookie_value, time() - 3600, "/"); // 86400 = 1 day
+}
 
-    echoResponse(200, $response);
+echoResponse(200, $response);
 });
 ?>

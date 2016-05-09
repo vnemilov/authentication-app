@@ -3,6 +3,8 @@
 require_once 'dbHandler.php';
 require_once 'passwordHash.php';
 require '.././libs/Slim/Slim.php';
+require '.././vendor/autoload.php';
+
 
 \Slim\Slim::registerAutoloader();
 
@@ -12,6 +14,8 @@ $app = new \Slim\Slim();
 $user_id = NULL;
 
 require_once 'authentication.php';
+
+
 
 /**
  * Verifying required params posted or not

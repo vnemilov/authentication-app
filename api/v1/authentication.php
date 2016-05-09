@@ -6,7 +6,7 @@ $app->get('/session', function() {
             $fulltoken = explode("___", $_COOKIE['user']);
             $rememberIdentifier = $fulltoken[0];
             $rememberToken = $fulltoken[1];
-            $user = $db->getOneRecord("SELECT uid, name, password, email, created FROM customers_auth WHERE remember_identifier='$rememberIdentifier'");
+            $user = $db->getOneRecord("SELECT uid, name, password, email, created FROM customers_auth WHERE remember_identifier='$rememberIdentifier' AND remember_token='$rememberToken'");
             $_SESSION['uid'] = $user['uid'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['name'] = $user['name'];
@@ -30,11 +30,16 @@ $app->post('/login', function() use ($app) {
     $user = $db->getOneRecord("select uid,name,password,email,created from customers_auth where phone='$email' or email='$email'");
     if ($user != NULL) {
         if(passwordHash::check_password($user['password'],$password)){
+            $factory = new RandomLib\Factory;
+$generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+
             $response['status'] = "success";
             $response['message'] = 'Logged in successfully.';
             if(isset($r->customer->remember)){
-$rememberIdentifier = "thisisrememberidentifier"; //this should be randomly generated string
-$rememberToken = "thisisremembertoken"; //this should be randomly generated string
+                $rememberIdentifier = $generator->generateString(128); //generate a random string 
+                $rememberToken = $generator->generateString(128); //generate a random string 
+//$rememberIdentifier = "thisisrememberidentifier"; //this should be randomly generated string
+//$rememberToken = "thisisremembertoken"; //this should be randomly generated string
 $updateUser = $db->updateUserCredentials("UPDATE customers_auth SET remember_identifier='$rememberIdentifier', remember_token='$rememberToken' WHERE name='$email'");
 $remember = $r->customer->remember;
 $response['rememberinfo'] = $rememberIdentifier;

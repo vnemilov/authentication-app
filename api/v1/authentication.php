@@ -2,16 +2,12 @@
 $app->get('/session', function() {
     $db = new DbHandler();
     $session = $db->getSession();
-    $response["uid"] = $session['uid'];
-    $response["email"] = $session['email'];
-    $response["name"] = $session['name'];
     echoResponse(200, $session);
 });
 
 $app->post('/login', function() use ($app) {
     require_once 'passwordHash.php';
     $r = json_decode($app->request->getBody());
- 
     verifyRequiredParams(array('email', 'password'),$r->customer);
     $response = array();
     $db = new DbHandler();
@@ -20,42 +16,39 @@ $app->post('/login', function() use ($app) {
     $user = $db->getOneRecord("select uid,name,password,email,created from customers_auth where phone='$email' or email='$email'");
     if ($user != NULL) {
         if(passwordHash::check_password($user['password'],$password)){
-            // if(5>3){
-
-            //      $tabble_name = "customers_auth";
-            //      $column_names = array('remember_identifier', 'remember_token');
-            //      $result = $db->insertIntoTable($r->customer, $column_names, $tabble_name);
-            // }
-        $response['status'] = "success";
-        $response['message'] = 'Logged in successfully.';
-           if(isset($r->customer->remember)){
-            $rememberIdentifier = "589347589u3485gdfhgdfughdf89g"; 
-            $rememberToken = "89u546854jkgh89dfgdf";
-            $updateUser = $db->updateUserCredentials("UPDATE customers_auth SET remember_identifier='$rememberIdentifier' WHERE name='$email'");
-            $remember = $r->customer->remember;
-            $response['rememberinfo'] = $rememberIdentifier;
-     }else{
-         $response['rememberinfo'] = false;
-     }
-        $response['name'] = $user['name'];
-        $response['uid'] = $user['uid'];
-        $response['email'] = $user['email'];
-        $response['createdAt'] = $user['created'];
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        $_SESSION['uid'] = $user['uid'];
-        $_SESSION['email'] = $email;
-        $_SESSION['name'] = $user['name'];
-        } else {
-            $response['status'] = "error";
-            $response['message'] = 'Login failed. Incorrect credentials';
-        }
-    }else {
-            $response['status'] = "error";
-            $response['message'] = 'No such user is registered';
-        }
-    echoResponse(200, $response);
+            $response['status'] = "success";
+            $response['message'] = 'Logged in successfully.';
+            if(isset($r->customer->remember)){
+$rememberIdentifier = "thisisrememberidentifier"; //this should be randomly generated string
+$rememberToken = "thisisremembertoken"; //this should be randomly generated string
+$updateUser = $db->updateUserCredentials("UPDATE customers_auth SET remember_identifier='$rememberIdentifier', remember_token='$rememberToken' WHERE name='$email'");
+$remember = $r->customer->remember;
+$response['rememberinfo'] = $rememberIdentifier;
+$cookie_name = "user";
+$cookie_value = $rememberIdentifier . '___' . $rememberToken;
+setcookie($cookie_name, $cookie_value, time() + 3600, "/"); // 86400 = 1 day
+}else{
+    $response['rememberinfo'] = false;
+}
+$response['name'] = $user['name'];
+$response['uid'] = $user['uid'];
+$response['email'] = $user['email'];
+$response['createdAt'] = $user['created'];
+if (!isset($_SESSION)) {
+    session_start();
+}
+$_SESSION['uid'] = $user['uid'];
+$_SESSION['email'] = $email;
+$_SESSION['name'] = $user['name'];
+} else {
+    $response['status'] = "error";
+    $response['message'] = 'Login failed. Incorrect credentials';
+}
+}else {
+    $response['status'] = "error";
+    $response['message'] = 'No such user is registered';
+}
+echoResponse(200, $response);
 });
 $app->post('/signUp', function() use ($app) {
     $response = array();
@@ -102,6 +95,12 @@ $app->get('/logout', function() {
     $session = $db->destroySession();
     $response["status"] = "info";
     $response["message"] = "Logged out successfully";
+    if(isset($_COOKIE['user'])){
+            $cookie_name = 'user';
+    $cookie_value = $_COOKIE['user'];
+    setcookie($cookie_name, $cookie_value, time() - 3600, "/"); // 86400 = 1 day
+    }
+
     echoResponse(200, $response);
 });
 ?>

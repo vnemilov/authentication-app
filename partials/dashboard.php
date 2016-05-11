@@ -1,6 +1,3 @@
-<?php 
-session_start();
- ?>
 <div ng-controller="dashCtrl">
     <div class="breadcrumbs" id="breadcrumbs">
         <ul class="breadcrumb">
@@ -36,4 +33,3 @@ session_start();
         </div>
     </div>
 </div>
-<!-- /.page-content -->

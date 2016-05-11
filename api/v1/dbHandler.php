@@ -45,7 +45,8 @@ class DbHandler {
             return NULL;
         }
     }
-    public function updateUserCredentials($query){
+    public function updateUserCredentials($identifier, $token, $email){
+        $query = "UPDATE customers_auth SET remember_identifier='$identifier', remember_token='$token' WHERE name='$email'";
         $r = $this->conn->query($query) or die($this->conn->error.__LINE__);
     }
 public function getSession(){

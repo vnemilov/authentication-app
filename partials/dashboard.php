@@ -1,11 +1,5 @@
 <?php 
 session_start();
-var_dump($_SESSION);
-// if(!isset($_SESSION['name'])){
-//     $StringExplo=explode("/",$_SERVER['REQUEST_URI']);
-// $HeadTo=$StringExplo[0]."login.php";
-// Header("Location: ".$HeadTo);
-// }
  ?>
 <div ng-controller="dashCtrl">
     <div class="breadcrumbs" id="breadcrumbs">
